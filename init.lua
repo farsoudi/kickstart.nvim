@@ -79,6 +79,8 @@ vim.api.nvim_create_user_command('EditConfig', function()
   vim.cmd('edit ' .. vim.fn.stdpath 'config' .. '/init.lua')
 end, {})
 
+vim.g.augment_workspace_folders = { '/Users/kasrafarsoudi/developer/WORK/brakeperformance.com' }
+
 --[[
    NOTE: Look for lines like this
 
@@ -264,6 +266,23 @@ require('lazy').setup({
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
+  { 'augmentcode/augment.vim' }, --KFCUSTOM
+  {
+  "nvim-neo-tree/neo-tree.nvim",
+  branch = "v3.x",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+    "MunifTanjim/nui.nvim",
+    -- {"3rd/image.nvim", opts = {}}, -- Optional image support in preview window: See `# Preview Mode` for more information
+  },
+  lazy = false, -- neo-tree will lazily load itself
+  ---@module "neo-tree"
+  ---@type neotree.Config?
+  opts = {
+    -- fill any relevant options here
+  },
+ },
   --
   -- Use `opts = {}` to automatically pass options to a plugin's `setup()` function, forcing the plugin to be loaded.
   --
