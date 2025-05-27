@@ -70,6 +70,16 @@ Kickstart Guide:
     These are hints about where to find more information about the relevant settings,
     plugins or Neovim features used in Kickstart.
 
+-- ]]
+
+-- Custom cmds (kasra)
+--
+-- EditConfig (Fast cmd to edit init.lua
+vim.api.nvim_create_user_command('EditConfig', function()
+  vim.cmd('edit ' .. vim.fn.stdpath 'config' .. '/init.lua')
+end, {})
+
+--[[
    NOTE: Look for lines like this
 
     Throughout the file. These are for you, the reader, to help you understand what is happening.
@@ -677,6 +687,7 @@ require('lazy').setup({
         -- gopls = {},
         -- pyright = {},
         rust_analyzer = {},
+        phpactor = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
