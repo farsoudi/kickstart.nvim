@@ -81,6 +81,15 @@ end, {})
 
 vim.g.augment_workspace_folders = { '/Users/kasrafarsoudi/developer/WORK/brakeperformance.com' }
 
+local enable_smart_tab = true
+if enable_smart_tab then
+  vim.o.shiftwidth = 4
+  vim.o.smarttab = true
+  vim.o.expandtab = true
+  vim.o.tabstop = 8
+  vim.o.softtabstop = 0
+end
+
 --[[
    NOTE: Look for lines like this
 
@@ -114,6 +123,7 @@ vim.g.have_nerd_font = false
 vim.o.hidden = true
 -- Make line numbers default
 vim.o.number = true
+vim.o.relativenumber = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 -- vim.o.relativenumber = true
@@ -192,9 +202,13 @@ vim.keymap.set('n', '<leader>at', function()
   vim.cmd 'Augment chat-toggle'
 end, { desc = 'Toggle Augment chat' })
 
+-- Turn off relative line numbers in insert mode
+vim.api.nvim_create_autocmd('InsertEnter', { command = 'set norelativenumber' })
+vim.api.nvim_create_autocmd('InsertLeave', { command = 'set relativenumber' })
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
-
+vim.cmd 'highlight LineNr       guifg=#888888 ctermfg=246'
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
@@ -271,7 +285,15 @@ require('lazy').setup({
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
-  { 'augmentcode/augment.vim' }, --KFCUSTOM
+  { 'augmentcode/augment.vim' },
+  {
+    'kylechui/nvim-surround',
+    version = '*', -- use latest stable
+    event = 'VeryLazy',
+    config = function()
+      require('nvim-surround').setup {}
+    end,
+  },
   -- Use `opts = {}` to automatically pass options to a plugin's `setup()` function, forcing the plugin to be loaded.
   --
 
@@ -450,12 +472,15 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+      vim.keymap.set('n', '<leader>ss', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-
+      -- git keymaps for telescope
+      vim.keymap.set('n', '<leader>gf', builtin.git_files, { desc = '[S]earch [G]it [F]iles' })
+      vim.keymap.set('n', '<leader>gb', builtin.git_branches, { desc = '[S]earch [G]it [B]ranches' })
+      vim.keymap.set('n', '<leader>gc', builtin.git_commits, { desc = '[S]earch [G]it [C]ommits' })
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
