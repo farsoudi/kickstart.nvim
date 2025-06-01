@@ -80,6 +80,7 @@ vim.api.nvim_create_user_command('EditConfig', function()
 end, {})
 
 vim.g.augment_workspace_folders = { '/Users/kasrafarsoudi/developer/WORK/brakeperformance.com' }
+vim.g.augment_disable_completions = true
 
 local enable_smart_tab = true
 if enable_smart_tab then
@@ -88,6 +89,40 @@ if enable_smart_tab then
   vim.o.expandtab = true
   vim.o.tabstop = 8
   vim.o.softtabstop = 0
+end
+
+vim.g._orig_colorscheme = nil
+vim.g._transparent = false
+
+local function toggle_background()
+  if vim.g._transparent then
+    -- restore
+    if vim.g._orig_colorscheme then
+      vim.cmd('colorscheme ' .. vim.g._orig_colorscheme)
+    end
+    vim.g._transparent = false
+  else
+    -- save current
+    vim.g._orig_colorscheme = vim.g.colors_name or ''
+    -- clear bg for common groups
+    for _, grp in ipairs {
+      'Normal',
+      'NormalNC',
+      'SignColumn',
+      'VertSplit',
+      'LineNr',
+      'Folded',
+      'Comment',
+      'ColorColumn',
+      'TelescopeBorder',
+      'TelescopePromptBorder',
+      'TelescopeResultsBorder',
+      'TelescopePreviewBorder',
+    } do
+      vim.api.nvim_set_hl(0, grp, { bg = 'none' })
+    end
+    vim.g._transparent = true
+  end
 end
 
 --[[
@@ -201,6 +236,7 @@ vim.keymap.set('n', '<leader>ac', ':Augment chat ', { desc = 'Send a chat to Aug
 vim.keymap.set('n', '<leader>at', function()
   vim.cmd 'Augment chat-toggle'
 end, { desc = 'Toggle Augment chat' })
+vim.keymap.set('n', '<leader>bt', toggle_background, { desc = 'Toggle transparent bg' })
 
 -- Turn off relative line numbers in insert mode
 vim.api.nvim_create_autocmd('InsertEnter', { command = 'set norelativenumber' })
@@ -292,6 +328,56 @@ require('lazy').setup({
     event = 'VeryLazy',
     config = function()
       require('nvim-surround').setup {}
+    end,
+  },
+  {
+    'folke/snacks.nvim',
+    priority = 1000, -- make sure it's loaded early
+    lazy = false, -- load immediately
+    ---@type snacks.Config
+    opts = {
+      -- enable whichever modules you want (or leave empty for defaults)
+      bigfile = { enabled = true },
+      dashboard = { enabled = true },
+      explorer = { enabled = true },
+      indent = { enabled = true },
+      input = { enabled = true },
+      notifier = { enabled = true },
+      picker = { enabled = true },
+      quickfile = { enabled = true },
+      scope = { enabled = true },
+      scroll = { enabled = true },
+      statuscolumn = { enabled = true },
+      words = { enabled = true },
+    },
+  },
+
+  -- yazi.nvim: floating-terminal file manager integration
+  {
+    'mikavilpas/yazi.nvim',
+    event = 'VeryLazy', -- load on demand
+    dependencies = {
+      'folke/snacks.nvim', -- for integrations (e.g. process_events_live)
+    },
+    keys = {
+      { '<leader>-', '<cmd>Yazi<cr>', desc = 'Open yazi in cwd' },
+      { '<leader>cw', '<cmd>Yazi cwd<cr>', desc = 'Open yazi in working dir' },
+      { '<c-up>', '<cmd>Yazi toggle<cr>', desc = 'Toggle last yazi session' },
+    },
+    ---@type YaziConfig
+    opts = {
+      open_for_directories = true, -- don’t hijack netrw by default
+      keymaps = {
+        show_help = '<f1>',
+      },
+      -- process events live so that file ops sync immediately
+      future_features = {
+        process_events_live = true,
+      },
+    },
+    init = function()
+      -- if you ever enable open_for_directories = true, disable netrw:
+      vim.g.loaded_netrwPlugin = 1
     end,
   },
   -- Use `opts = {}` to automatically pass options to a plugin's `setup()` function, forcing the plugin to be loaded.
