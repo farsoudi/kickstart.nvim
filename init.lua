@@ -81,6 +81,16 @@ end, {})
 
 vim.g.augment_workspace_folders = { '/Users/kasrafarsoudi/developer/WORK/brakeperformance.com' }
 vim.g.augment_disable_completions = true
+vim.g.format_on_save_enabled = true
+
+local function toggle_format_on_save()
+  vim.g.format_on_save_enabled = not vim.g.format_on_save_enabled
+  if vim.g.format_on_saved_enabled then
+    vim.notify('Format on save: enabled', vim.log.levels.INFO)
+  else
+    vim.notify('Format on save: disabled', vim.log.levels.INFO)
+  end
+end
 
 local enable_smart_tab = true
 if enable_smart_tab then
@@ -237,6 +247,33 @@ vim.keymap.set('n', '<leader>at', function()
   vim.cmd 'Augment chat-toggle'
 end, { desc = 'Toggle Augment chat' })
 vim.keymap.set('n', '<leader>bt', toggle_background, { desc = 'Toggle transparent bg' })
+vim.keymap.set('n', '<leader>te', ':setlocal spell spelllang=en_us', { desc = 'Toggle English Linting' })
+vim.keymap.set('n', '<leader>tf', toggle_format_on_save, { desc = 'Toggle format on save' })
+-- Hotmap for creating an archive of root directory (git or not git)
+vim.keymap.set(
+  'n',
+  '<leader>zg',
+  [[
+  :silent !sh -c 'tmp=$(mktemp /tmp/root-XXXXXX.zip) \
+    && git archive --format=zip -o "$tmp" HEAD \
+    && yoink "$tmp" \
+    && rm "$tmp"'
+  <CR>
+]],
+  { noremap = true, silent = true }
+)
+vim.keymap.set(
+  'n',
+  '<leader>zf',
+  [[
+  :silent !sh -c 'tmp=$(mktemp /tmp/archive-XXXXXX.zip) \
+    && zip -r "$tmp" . \
+    && yoink "$tmp" \
+    && rm "$tmp"'
+  <CR>
+]],
+  { noremap = true, silent = true }
+)
 
 -- Turn off relative line numbers in insert mode
 vim.api.nvim_create_autocmd('InsertEnter', { command = 'set norelativenumber' })
@@ -812,7 +849,7 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
+        ts_ls = {},
         --
 
         lua_ls = {
@@ -884,9 +921,10 @@ require('lazy').setup({
     opts = {
       notify_on_error = false,
       format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
+        if not vim.g.format_on_save_enabled then
+          return nil
+        end
+
         local disable_filetypes = { c = true, cpp = true }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
