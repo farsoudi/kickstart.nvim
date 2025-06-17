@@ -388,7 +388,12 @@ require('lazy').setup({
       words = { enabled = true },
     },
   },
-
+  {
+    'nvim-neorg/neorg',
+    lazy = false, -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
+    version = '*', -- Pin Neorg to the latest stable release
+    config = true,
+  },
   -- yazi.nvim: floating-terminal file manager integration
   {
     'mikavilpas/yazi.nvim',
