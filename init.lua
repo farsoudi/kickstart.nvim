@@ -390,9 +390,30 @@ require('lazy').setup({
   },
   {
     'nvim-neorg/neorg',
-    lazy = false, -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
-    version = '*', -- Pin Neorg to the latest stable release
-    config = true,
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-neorg/neorg-telescope', -- optional, for Neorg + Telescope integration
+      'nvim-treesitter/nvim-treesitter', -- required for Neorg parsing
+    },
+    lazy = false, -- load immediately or change to true if using a keybinding
+    version = '*',
+    config = function()
+      require('neorg').setup {
+        load = {
+          ['core.defaults'] = {}, -- basic default behavior
+          ['core.concealer'] = {}, -- pretty icons
+          ['core.dirman'] = { -- directory manager
+            config = {
+              workspaces = {
+                notes = '~/Sync/neorg/notes', -- change as needed
+                school = '~/Sync/neorg/school',
+              },
+              default_workspace = 'notes',
+            },
+          },
+        },
+      }
+    end,
   },
   -- yazi.nvim: floating-terminal file manager integration
   {
