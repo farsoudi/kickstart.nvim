@@ -17,7 +17,7 @@ cargo install yazi-fm yazi-cli
 3) Install apt packages
 ```
 sudo apt update
-sudo apt install -y neovim git curl unzip ripgrep fd-find build-essential make gcc php nodejs npm
+sudo apt install -y neovim git curl unzip ripgrep fd-find build-essential make gcc php
 
 # fd is named fdfind on Debian; give it the fd name Neovim tooling expects:
 sudo ln -s $(command -v fdfind) /usr/local/bin/fd 2>/dev/null || true
