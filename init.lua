@@ -276,8 +276,12 @@ vim.keymap.set(
 )
 
 -- Turn off relative line numbers in insert mode
-vim.api.nvim_create_autocmd('InsertEnter', { command = 'set norelativenumber' })
-vim.api.nvim_create_autocmd('InsertLeave', { command = 'set relativenumber' })
+-- vim.api.nvim_create_autocmd('InsertEnter', { command = 'set norelativenumber' })
+-- vim.api.nvim_create_autocmd('InsertLeave', { command = 'set relativenumber' })
+-- NEW: Just have both friggin line numbers
+-- vim.opt.nu = true
+-- vim.opt.relativenumber = true
+-- vim.o.statuscolumn = '%=%l %r'
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
