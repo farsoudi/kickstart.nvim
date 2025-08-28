@@ -2,36 +2,42 @@
 
 ## Pre-req on linux
 1) Install nvm (for node)
+```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-
+```
 2) Install yazi
-\# install rust (if you don’t have it)
+```
+# install rust (if you don’t have it)
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 source $HOME/.cargo/env
-\# yazi + companion cli
+# yazi + companion cli
 cargo install yazi-fm yazi-cli
+```
 
 3) Install apt packages
+```
 sudo apt update
 sudo apt install -y neovim git curl unzip ripgrep fd-find build-essential make gcc php nodejs npm
 
-\# fd is named fdfind on Debian; give it the fd name Neovim tooling expects:
+# fd is named fdfind on Debian; give it the fd name Neovim tooling expects:
 sudo ln -s $(command -v fdfind) /usr/local/bin/fd 2>/dev/null || true
+```
 
 ---
 
 ## Pre-req on MacOs
-\# neovim + basics
+```
+# neovim + basics
 brew install neovim git ripgrep fd node php yazi
 
-\# build tools for native plugins + treesitter compiles
+# build tools for native plugins + treesitter compiles
 xcode-select --install  # if not already
-\# (optional) if you prefer: brew install llvm make
+# (optional) if you prefer: brew install llvm make
 
-\# nerd font (icons)
+# nerd font (icons)
 brew tap homebrew/cask-fonts
 brew install --cask font-jetbrains-mono-nerd-font
-
+```
 
 ## Introduction
 
